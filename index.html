@@ -157,3 +157,269 @@
     </div>
     <div class="chat-divider"></div>
     <div class="messages" id="messages"></div>
+    <div class="typing-indicator" id="typing">
+      <div class="typing-label">Tender</div>
+      <div class="typing-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+    <div class="error-banner" id="chat-error"></div>
+    <div class="summary-prompt" id="summary-prompt">
+      <span>We've covered some ground. Want a session summary?</span>
+      <button class="btn-generate" onclick="generateSummary()">Generate</button>
+    </div>
+    <div class="summary-box" id="summary-box">
+      <div class="summary-label">Session Summary</div>
+      <div class="summary-content" id="summary-content"></div>
+    </div>
+    <div style="height:1px" id="bottom"></div>
+    <div class="input-area">
+      <div class="input-box">
+        <textarea id="user-input" rows="1" placeholder="What's on your mind..." oninput="onInput(this)" onkeydown="onKey(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="send()">↑</button>
+      </div>
+      <div class="input-hint">Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BACKEND = 'https://money-bot-backend-3zqg.onrender.com';
+const SYSTEM_PROMPT = `You are a money psychology companion — warm, perceptive, and gently challenging. You work with people who have a complicated relationship with money — avoidance, shame, feast/famine cycles, or simply never having learned to look at it clearly.
+
+Your role is NOT to give financial advice. You help people explore the emotional, psychological, and behavioral patterns underneath their relationship with money.
+
+You draw on Morgan Housel's "The Psychology of Money" — referencing relevant concepts naturally (not academically) when they illuminate what the person is sharing. Key Housel concepts to weave in:
+- Wealth is what you don't see (the hidden nature of financial security)
+- Man in the Car Paradox (we seek admiration through spending, but others don't think about us that way)
+- Saving as the gap between ego and income
+- Tail risks and the importance of room for error
+- The role of personal history in shaping money behavior
+- Reasonable > Rational (making decisions you can live with emotionally)
+
+Your conversational style:
+- Ask ONE question at a time. Never stack questions.
+- Be curious, not clinical. Be warm, not cheerful.
+- When you notice avoidance, name it gently but directly.
+- Challenge their thinking before validating it.
+- Connect what they say to patterns, not just moments.
+- Let the person tell you who they are — never assume their profession, income situation, or financial history. Ask, don't project.
+
+Session structure:
+- Start by asking what brought them here today — one open question.
+- Let the conversation unfold naturally.
+- After 6-8 exchanges, offer to generate a session summary that captures key themes, patterns noticed, and one question to sit with.
+
+Never give a list of tips. Never say "great question." Never be sycophantic. Be the thought partner they need, not the one they're asking for.`;
+
+const STARTER = "Hey. I'm glad you're here.\n\nBefore we dive into numbers or systems — what's actually on your mind about money today? Not the practical stuff. The thing underneath it.";
+const SUMMARY_PROMPT = `Based on our conversation, generate a session summary in this format:\n\n**What came up today:** 2-3 sentences on the main themes.\n**Pattern noticed:** One specific behavioral or emotional pattern — name it directly.\n**The Housel connection:** One concept from The Psychology of Money and how it maps to what they shared.\n**One question to sit with:** A single open question that gets to the heart of what wasn't fully said.\n\nUnder 200 words. Be honest, not kind.`;
+
+let token = null, userEmail = null, sessionId = null, messages = [], loading = false, userTurns = 0, summaryShown = false;
+
+function showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
+function clearError(id) { const el = document.getElementById(id); el.textContent = ''; el.style.display = 'none'; }
+
+function showLogin() {
+  document.getElementById('auth-title').textContent = 'Sign in';
+  document.getElementById('view-login').style.display = '';
+  document.getElementById('view-register').style.display = 'none';
+  document.getElementById('view-account').style.display = 'none';
+  document.getElementById('view-deleted').style.display = 'none';
+  clearError('login-error');
+}
+function showRegister() {
+  document.getElementById('auth-title').textContent = 'Create account';
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-register').style.display = '';
+  document.getElementById('view-account').style.display = 'none';
+  document.getElementById('view-deleted').style.display = 'none';
+  clearError('reg-error');
+}
+function showAccount() {
+  document.getElementById('auth-title').textContent = 'Your account';
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-register').style.display = 'none';
+  document.getElementById('view-account').style.display = '';
+  document.getElementById('view-deleted').style.display = 'none';
+  document.getElementById('account-email-display').textContent = userEmail;
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) return showError('login-error', 'Email and password required.');
+  clearError('login-error');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  try {
+    const r = await fetch(BACKEND + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    const d = await r.json();
+    if (!r.ok) return showError('login-error', d.error || 'Login failed.');
+    token = d.token; userEmail = d.email;
+    enterChat();
+  } catch (e) { showError('login-error', 'Could not reach server. Try again.'); }
+  finally { btn.disabled = false; btn.textContent = 'Sign in'; }
+}
+
+async function doRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  if (!email || !password) return showError('reg-error', 'Email and password required.');
+  if (password.length < 8) return showError('reg-error', 'Password must be at least 8 characters.');
+  clearError('reg-error');
+  const btn = document.getElementById('reg-btn');
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  try {
+    const r = await fetch(BACKEND + '/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+    const d = await r.json();
+    if (!r.ok) return showError('reg-error', d.error || 'Registration failed.');
+    token = d.token; userEmail = d.email;
+    enterChat();
+  } catch (e) { showError('reg-error', 'Could not reach server. Try again.'); }
+  finally { btn.disabled = false; btn.textContent = 'Create account'; }
+}
+
+function doLogout() {
+  token = null; userEmail = null; sessionId = null; messages = []; userTurns = 0; summaryShown = false;
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('chat-screen').style.display = 'none';
+  showLogin();
+}
+
+function goToAccount() {
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('chat-screen').style.display = 'none';
+  showAccount();
+}
+
+function toggleDeleteConfirm() {
+  const box = document.getElementById('delete-confirm');
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
+}
+
+async function doDelete() {
+  clearError('delete-error');
+  try {
+    const r = await fetch(BACKEND + '/account', { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    const d = await r.json();
+    if (!r.ok) return showError('delete-error', d.error || 'Delete failed.');
+    token = null; userEmail = null; sessionId = null; messages = []; userTurns = 0; summaryShown = false;
+    document.getElementById('auth-title').textContent = 'Your account';
+    document.getElementById('view-login').style.display = 'none';
+    document.getElementById('view-register').style.display = 'none';
+    document.getElementById('view-account').style.display = 'none';
+    document.getElementById('view-deleted').style.display = '';
+  } catch (e) { showError('delete-error', 'Could not reach server. Try again.'); }
+}
+
+async function enterChat() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display = 'flex';
+  messages = [{ role: 'assistant', content: STARTER }];
+  userTurns = 0; summaryShown = false;
+  document.getElementById('summary-prompt').style.display = 'none';
+  document.getElementById('summary-box').style.display = 'none';
+  document.getElementById('chat-error').style.display = 'none';
+  renderMessages();
+  try {
+    const r = await fetch(BACKEND + '/sessions/new', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+    const d = await r.json();
+    sessionId = d.sessionId || null;
+  } catch (e) { sessionId = null; }
+}
+
+function newSession() {
+  messages = [{ role: 'assistant', content: STARTER }];
+  userTurns = 0; summaryShown = false; sessionId = null;
+  document.getElementById('summary-prompt').style.display = 'none';
+  document.getElementById('summary-box').style.display = 'none';
+  document.getElementById('chat-error').style.display = 'none';
+  renderMessages();
+  fetch(BACKEND + '/sessions/new', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } })
+    .then(r => r.json()).then(d => { sessionId = d.sessionId || null; }).catch(() => {});
+}
+
+function fmt(text) {
+  return text.split('\n').filter(l => l.trim()).map(line => {
+    const html = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return `<p>${html}</p>`;
+  }).join('');
+}
+
+function renderMessages() {
+  document.getElementById('messages').innerHTML = messages.map(m => `
+    <div class="message-wrap ${m.role}">
+      <div class="message-label">${m.role === 'user' ? 'You' : 'Tender'}</div>
+      <div class="bubble">${fmt(m.content)}</div>
+    </div>`).join('');
+  scrollBottom();
+}
+
+function scrollBottom() { setTimeout(() => document.getElementById('bottom').scrollIntoView({ behavior: 'smooth' }), 50); }
+
+function onInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').classList.toggle('active', !!el.value.trim() && !loading);
+}
+
+function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+
+async function send() {
+  const input = document.getElementById('user-input');
+  const msg = input.value.trim();
+  if (!msg || loading) return;
+  messages.push({ role: 'user', content: msg });
+  userTurns++;
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('send-btn').classList.remove('active');
+  renderMessages(); setLoading(true);
+  try {
+    const r = await fetch(BACKEND + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: messages.map(m => ({ role: m.role, content: m.content })), sessionId, reachedSummary: summaryShown || null })
+    });
+    const d = await r.json();
+    const reply = d.content?.[0]?.text ?? "I'm here. Keep going.";
+    messages.push({ role: 'assistant', content: reply });
+    renderMessages();
+    if (userTurns >= 6 && !summaryShown) document.getElementById('summary-prompt').style.display = 'flex';
+  } catch (e) {
+    messages.pop(); userTurns--;
+    const err = document.getElementById('chat-error');
+    err.textContent = 'Something went wrong. Try again.'; err.style.display = 'block';
+    renderMessages();
+  } finally { setLoading(false); }
+}
+
+async function generateSummary() {
+  setLoading(true);
+  document.getElementById('summary-prompt').style.display = 'none';
+  try {
+    const r = await fetch(BACKEND + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: [...messages.map(m => ({ role: m.role, content: m.content })), { role: 'user', content: SUMMARY_PROMPT }], sessionId, reachedSummary: true })
+    });
+    const d = await r.json();
+    summaryShown = true;
+    document.getElementById('summary-content').innerHTML = fmt(d.content?.[0]?.text ?? '');
+    document.getElementById('summary-box').style.display = 'block';
+    scrollBottom();
+  } catch (e) {
+    const err = document.getElementById('chat-error');
+    err.textContent = "Couldn't generate summary. Try again."; err.style.display = 'block';
+    document.getElementById('summary-prompt').style.display = 'flex';
+  } finally { setLoading(false); }
+}
+
+function setLoading(state) {
+  loading = state;
+  document.getElementById('typing').style.display = state ? 'flex' : 'none';
+  if (state) scrollBottom();
+}
+</script>
+</body>
+</html>
