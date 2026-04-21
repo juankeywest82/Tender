@@ -6,410 +6,84 @@
 <title>Tender</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: #0c0b09;
-    font-family: Georgia, serif;
-    color: #d4c8b4;
-    min-height: 100vh;
-  }
-
-  /* ── AUTH ── */
-  #auth-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-
-  .auth-card {
-    width: 100%;
-    max-width: 420px;
-    background: #131210;
-    border: 1px solid #242018;
-    border-radius: 12px;
-    padding: 36px 32px;
-  }
-
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: #8a7d6b;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .auth-title {
-    font-size: 22px;
-    font-weight: 300;
-    color: #d4c8b4;
-    margin-bottom: 28px;
-  }
-
+  body { background: #0c0b09; font-family: Georgia, serif; color: #d4c8b4; min-height: 100vh; }
+  #auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .auth-card { width: 100%; max-width: 420px; background: #131210; border: 1px solid #242018; border-radius: 12px; padding: 36px 32px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.2em; color: #8a7d6b; text-transform: uppercase; margin-bottom: 8px; }
+  .auth-title { font-size: 22px; font-weight: 300; color: #d4c8b4; margin-bottom: 28px; }
   .field { margin-bottom: 18px; }
-
-  .field label {
-    display: block;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #8a7d6b;
-    margin-bottom: 8px;
-  }
-
-  .field input {
-    width: 100%;
-    background: #0c0b09;
-    border: 1px solid #2e2820;
-    border-radius: 6px;
-    padding: 11px 14px;
-    color: #d4c8b4;
-    font-size: 15px;
-    font-family: Georgia, serif;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
+  .field label { display: block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #8a7d6b; margin-bottom: 8px; }
+  .field input { width: 100%; background: #0c0b09; border: 1px solid #2e2820; border-radius: 6px; padding: 11px 14px; color: #d4c8b4; font-size: 15px; font-family: Georgia, serif; outline: none; transition: border-color 0.15s; }
   .field input:focus { border-color: #c4a882; }
-
-  .consent {
-    background: #0c0b09;
-    border: 1px solid #2e2820;
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 22px;
-    font-size: 12px;
-    line-height: 1.75;
-    color: #8a7d6b;
-  }
-
+  .consent { background: #0c0b09; border: 1px solid #2e2820; border-radius: 8px; padding: 14px 16px; margin-bottom: 22px; font-size: 12px; line-height: 1.75; color: #8a7d6b; }
   .consent strong { color: #a09080; font-weight: normal; }
-
-  .btn-primary {
-    width: 100%;
-    background: #c4a882;
-    border: none;
-    color: #0c0b09;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-family: Georgia, serif;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
+  .btn-primary { width: 100%; background: #c4a882; border: none; color: #0c0b09; padding: 12px; border-radius: 6px; font-size: 13px; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s; }
   .btn-primary:hover { opacity: 0.88; }
   .btn-primary:disabled { opacity: 0.4; cursor: default; }
-
-  .switch {
-    text-align: center;
-    margin-top: 18px;
-    font-size: 13px;
-    color: #5a5040;
-  }
-
-  .switch a {
-    color: #c4a882;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .msg-error {
-    background: #1a1010;
-    border: 1px solid #4a2020;
-    border-radius: 6px;
-    color: #c47070;
-    font-size: 13px;
-    padding: 10px 14px;
-    margin-bottom: 16px;
-    display: none;
-  }
-
+  .switch { text-align: center; margin-top: 18px; font-size: 13px; color: #5a5040; }
+  .switch a { color: #c4a882; cursor: pointer; text-decoration: underline; }
+  .msg-error { background: #1a1010; border: 1px solid #4a2020; border-radius: 6px; color: #c47070; font-size: 13px; padding: 10px 14px; margin-bottom: 16px; display: none; }
   .divider { height: 1px; background: #242018; margin: 24px 0; }
-
-  .btn-ghost {
-    width: 100%;
-    background: none;
-    border: 1px solid #2e2820;
-    color: #8a7d6b;
-    padding: 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-family: Georgia, serif;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
+  .btn-ghost { width: 100%; background: none; border: 1px solid #2e2820; color: #8a7d6b; padding: 10px; border-radius: 6px; font-size: 12px; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
   .btn-ghost:hover { border-color: #c47070; color: #c47070; }
-
-  .confirm-box {
-    background: #1a1010;
-    border: 1px solid #4a2020;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 12px;
-    font-size: 13px;
-    color: #c47070;
-    line-height: 1.65;
-    display: none;
-  }
-
+  .confirm-box { background: #1a1010; border: 1px solid #4a2020; border-radius: 8px; padding: 16px; margin-top: 12px; font-size: 13px; color: #c47070; line-height: 1.65; display: none; }
   .confirm-btns { display: flex; gap: 10px; margin-top: 14px; }
   .confirm-btns button { flex: 1; padding: 9px; border-radius: 5px; font-size: 12px; font-family: Georgia, serif; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
   .btn-cancel-del { background: none; border: 1px solid #3a3020; color: #8a7d6b; }
   .btn-delete-confirm { background: #c47070; border: none; color: #0c0b09; }
-
   .signed-in-as { font-size: 13px; color: #8a7d6b; margin-bottom: 22px; }
   .signed-in-as strong { color: #c4a882; font-weight: normal; }
-
-  /* ── CHAT ── */
-  #chat-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .chat-inner {
-    width: 100%;
-    max-width: 680px;
-    padding: 0 24px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  .chat-header {
-    padding: 32px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-shrink: 0;
-  }
-
+  #chat-screen { display: none; flex-direction: column; align-items: center; min-height: 100vh; }
+  .chat-inner { width: 100%; max-width: 680px; padding: 0 24px; display: flex; flex-direction: column; min-height: 100vh; }
+  .chat-header { padding: 32px 0 0; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
   .header-actions { display: flex; gap: 10px; align-items: center; }
-
-  .btn-small {
-    background: none;
-    border: 1px solid #2e2820;
-    color: #8a7d6b;
-    padding: 6px 14px;
-    border-radius: 4px;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    cursor: pointer;
-    text-transform: uppercase;
-    font-family: Georgia, serif;
-    transition: border-color 0.15s;
-  }
-
+  .btn-small { background: none; border: 1px solid #2e2820; color: #8a7d6b; padding: 6px 14px; border-radius: 4px; font-size: 11px; letter-spacing: 0.15em; cursor: pointer; text-transform: uppercase; font-family: Georgia, serif; transition: border-color 0.15s; }
   .btn-small:hover { border-color: #c4a882; color: #c4a882; }
-
   .chat-divider { height: 1px; background: #242018; margin: 20px 0; flex-shrink: 0; }
-
   .messages { flex: 1; }
-
-  .message-wrap {
-    margin-bottom: 28px;
-    display: flex;
-    flex-direction: column;
-  }
-
+  .message-wrap { margin-bottom: 28px; display: flex; flex-direction: column; }
   .message-wrap.user { align-items: flex-end; }
   .message-wrap.assistant { align-items: flex-start; }
-
-  .message-label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
+  .message-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 6px; }
   .message-wrap.user .message-label { color: #c4a882; }
   .message-wrap.assistant .message-label { color: #6b8c6b; }
-
-  .bubble {
-    max-width: 88%;
-    padding: 14px 18px;
-    font-size: 15px;
-    line-height: 1.78;
-    color: #d4c8b4;
-  }
-
+  .bubble { max-width: 88%; padding: 14px 18px; font-size: 15px; line-height: 1.78; color: #d4c8b4; }
   .bubble p { margin: 0 0 8px 0; }
   .bubble p:last-child { margin-bottom: 0; }
-
-  .message-wrap.user .bubble {
-    background: #1a1814;
-    border: 1px solid #3a3020;
-    border-radius: 12px 12px 2px 12px;
-  }
-
-  .message-wrap.assistant .bubble {
-    background: #131210;
-    border: 1px solid #242018;
-    border-radius: 12px 12px 12px 2px;
-  }
-
-  .typing-indicator {
-    display: none;
-    margin-bottom: 28px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .typing-label {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #6b8c6b;
-    margin-bottom: 6px;
-  }
-
-  .typing-dots {
-    padding: 18px;
-    background: #131210;
-    border: 1px solid #242018;
-    border-radius: 12px 12px 12px 2px;
-    display: flex;
-    gap: 6px;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #6b8c6b;
-    animation: pulse 1.2s ease-in-out infinite;
-  }
-
+  .message-wrap.user .bubble { background: #1a1814; border: 1px solid #3a3020; border-radius: 12px 12px 2px 12px; }
+  .message-wrap.assistant .bubble { background: #131210; border: 1px solid #242018; border-radius: 12px 12px 12px 2px; }
+  .typing-indicator { display: none; margin-bottom: 28px; flex-direction: column; align-items: flex-start; }
+  .typing-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b8c6b; margin-bottom: 6px; }
+  .typing-dots { padding: 18px; background: #131210; border: 1px solid #242018; border-radius: 12px 12px 12px 2px; display: flex; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #6b8c6b; animation: pulse 1.2s ease-in-out infinite; }
   .dot:nth-child(2) { animation-delay: 0.2s; }
   .dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scale(0.8); }
-    50% { opacity: 1; transform: scale(1); }
-  }
-
-  .error-banner {
-    padding: 12px 16px;
-    background: #1a1010;
-    border: 1px solid #4a2020;
-    border-radius: 8px;
-    color: #c47070;
-    font-size: 13px;
-    margin-bottom: 20px;
-    display: none;
-  }
-
-  .summary-prompt {
-    padding: 16px 20px;
-    background: #131210;
-    border: 1px solid #2e2820;
-    border-radius: 10px;
-    margin-bottom: 24px;
-    display: none;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-  }
-
+  @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
+  .error-banner { padding: 12px 16px; background: #1a1010; border: 1px solid #4a2020; border-radius: 8px; color: #c47070; font-size: 13px; margin-bottom: 20px; display: none; }
+  .summary-prompt { padding: 16px 20px; background: #131210; border: 1px solid #2e2820; border-radius: 10px; margin-bottom: 24px; display: none; justify-content: space-between; align-items: center; gap: 12px; }
   .summary-prompt span { font-size: 13px; color: #a09080; }
-
-  .btn-generate {
-    background: #c4a882;
-    border: none;
-    color: #0c0b09;
-    padding: 7px 16px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-family: Georgia, serif;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .summary-box {
-    padding: 24px;
-    background: #131210;
-    border: 1px solid #c4a88233;
-    border-radius: 12px;
-    margin-bottom: 28px;
-    display: none;
-  }
-
-  .summary-label {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #c4a882;
-    margin-bottom: 16px;
-  }
-
+  .btn-generate { background: #c4a882; border: none; color: #0c0b09; padding: 7px 16px; border-radius: 4px; font-size: 12px; font-family: Georgia, serif; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+  .summary-box { padding: 24px; background: #131210; border: 1px solid #c4a88233; border-radius: 12px; margin-bottom: 28px; display: none; }
+  .summary-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #c4a882; margin-bottom: 16px; }
   .summary-content { font-size: 14px; line-height: 1.85; color: #c8bca8; }
   .summary-content p { margin: 0 0 8px 0; }
   .summary-content p:last-child { margin-bottom: 0; }
-
   .input-area { padding: 16px 0 32px; flex-shrink: 0; }
-
-  .input-box {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-    background: #131210;
-    border: 1px solid #242018;
-    border-radius: 10px;
-    padding: 12px 14px;
-  }
-
-  .input-box textarea {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: #d4c8b4;
-    font-size: 15px;
-    font-family: Georgia, serif;
-    line-height: 1.6;
-    resize: none;
-    max-height: 120px;
-  }
-
+  .input-box { display: flex; gap: 10px; align-items: flex-end; background: #131210; border: 1px solid #242018; border-radius: 10px; padding: 12px 14px; }
+  .input-box textarea { flex: 1; background: none; border: none; outline: none; color: #d4c8b4; font-size: 15px; font-family: Georgia, serif; line-height: 1.6; resize: none; max-height: 120px; }
   .input-box textarea::placeholder { color: #3a3020; }
-
-  .send-btn {
-    background: #242018;
-    border: none;
-    color: #5a5040;
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    cursor: default;
-    font-size: 16px;
-    flex-shrink: 0;
-    transition: background 0.15s, color 0.15s;
-  }
-
+  .send-btn { background: #242018; border: none; color: #5a5040; width: 36px; height: 36px; border-radius: 6px; cursor: default; font-size: 16px; flex-shrink: 0; transition: background 0.15s, color 0.15s; }
   .send-btn.active { background: #c4a882; color: #0c0b09; cursor: pointer; }
-
   .input-hint { font-size: 11px; color: #2a2520; text-align: center; margin-top: 10px; }
 </style>
 </head>
 <body>
 
-<!-- ── AUTH SCREEN ── -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="eyebrow">Tender</div>
     <div class="auth-title" id="auth-title">Sign in</div>
 
-    <!-- Login -->
     <div id="view-login">
       <div class="field">
         <label>Email</label>
@@ -424,7 +98,6 @@
       <div class="switch">No account? <a onclick="showRegister()">Create one</a></div>
     </div>
 
-    <!-- Register -->
     <div id="view-register" style="display:none">
       <div class="field">
         <label>Email</label>
@@ -442,7 +115,6 @@
       <div class="switch">Already have an account? <a onclick="showLogin()">Sign in</a></div>
     </div>
 
-    <!-- Account -->
     <div id="view-account" style="display:none">
       <div class="signed-in-as">Signed in as <strong id="account-email-display"></strong></div>
       <button class="btn-primary" onclick="enterChat()">Start session ↑</button>
@@ -458,10 +130,19 @@
       <div class="msg-error" id="delete-error" style="margin-top:12px"></div>
       <div class="switch" style="margin-top:20px"><a onclick="doLogout()">Sign out</a></div>
     </div>
+
+    <div id="view-deleted" style="display:none">
+      <div style="text-align:center; padding: 12px 0 24px;">
+        <div style="font-size: 14px; letter-spacing: 0.15em; text-transform: uppercase; color: #6b8c6b; margin-bottom: 20px;">Done.</div>
+        <div style="font-size: 18px; font-weight: 300; color: #d4c8b4; margin-bottom: 14px;">You're all clear.</div>
+        <div style="font-size: 14px; line-height: 1.75; color: #8a7d6b;">Your account and every conversation have been permanently deleted. Nothing remains.</div>
+        <div style="font-size: 13px; color: #5a5040; margin-top: 20px;">If you ever want to come back, you know where to find us.</div>
+      </div>
+      <button class="btn-primary" style="margin-top: 8px;" onclick="showLogin()">Start over</button>
+    </div>
   </div>
 </div>
 
-<!-- ── CHAT SCREEN ── -->
 <div id="chat-screen">
   <div class="chat-inner">
     <div class="chat-header">
@@ -474,36 +155,27 @@
         <button class="btn-small" onclick="goToAccount()">Account</button>
       </div>
     </div>
-
     <div class="chat-divider"></div>
-
     <div class="messages" id="messages"></div>
-
     <div class="typing-indicator" id="typing">
       <div class="typing-label">Tender</div>
       <div class="typing-dots">
         <div class="dot"></div><div class="dot"></div><div class="dot"></div>
       </div>
     </div>
-
     <div class="error-banner" id="chat-error"></div>
-
     <div class="summary-prompt" id="summary-prompt">
       <span>We've covered some ground. Want a session summary?</span>
       <button class="btn-generate" onclick="generateSummary()">Generate</button>
     </div>
-
     <div class="summary-box" id="summary-box">
       <div class="summary-label">Session Summary</div>
       <div class="summary-content" id="summary-content"></div>
     </div>
-
     <div style="height:1px" id="bottom"></div>
-
     <div class="input-area">
       <div class="input-box">
-        <textarea id="user-input" rows="1" placeholder="What's on your mind..."
-          oninput="onInput(this)" onkeydown="onKey(event)"></textarea>
+        <textarea id="user-input" rows="1" placeholder="What's on your mind..." oninput="onInput(this)" onkeydown="onKey(event)"></textarea>
         <button class="send-btn" id="send-btn" onclick="send()">↑</button>
       </div>
       <div class="input-hint">Enter to send · Shift+Enter for new line</div>
@@ -513,7 +185,6 @@
 
 <script>
 const BACKEND = 'https://money-bot-backend-3zqg.onrender.com';
-
 const SYSTEM_PROMPT = `You are a money psychology companion — warm, perceptive, and gently challenging. You work with a self-employed real estate agent who has variable income, a history of money avoidance, and is actively rebuilding after a 6+ month sales drought.
 
 Your role is NOT to give financial advice. You help her explore the emotional, psychological, and behavioral patterns underneath her relationship with money.
@@ -542,59 +213,35 @@ Session structure:
 Never give a list of tips. Never say "great question." Never be sycophantic. Be the thought partner she needs, not the one she's asking for.`;
 
 const STARTER = "Hey. I'm glad you're here.\n\nBefore we dive into numbers or systems — what's actually on your mind about money today? Not the practical stuff. The thing underneath it.";
+const SUMMARY_PROMPT = `Based on our conversation, generate a session summary in this format:\n\n**What came up today:** 2-3 sentences on the main themes.\n**Pattern noticed:** One specific behavioral or emotional pattern — name it directly.\n**The Housel connection:** One concept from The Psychology of Money and how it maps to what she shared.\n**One question to sit with:** A single open question that gets to the heart of what wasn't fully said.\n\nUnder 200 words. Be honest, not kind.`;
 
-const SUMMARY_PROMPT = `Based on our conversation, generate a session summary in this format:
+let token = null, userEmail = null, sessionId = null, messages = [], loading = false, userTurns = 0, summaryShown = false;
 
-**What came up today:** 2-3 sentences on the main themes.
-**Pattern noticed:** One specific behavioral or emotional pattern — name it directly.
-**The Housel connection:** One concept from The Psychology of Money and how it maps to what she shared.
-**One question to sit with:** A single open question that gets to the heart of what wasn't fully said.
-
-Under 200 words. Be honest, not kind.`;
-
-let token = null;
-let userEmail = null;
-let sessionId = null;
-let messages = [];
-let loading = false;
-let userTurns = 0;
-let summaryShown = false;
-
-// ── AUTH ──
-
-function showError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function clearError(id) {
-  const el = document.getElementById(id);
-  el.textContent = '';
-  el.style.display = 'none';
-}
+function showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.style.display = 'block'; }
+function clearError(id) { const el = document.getElementById(id); el.textContent = ''; el.style.display = 'none'; }
 
 function showLogin() {
   document.getElementById('auth-title').textContent = 'Sign in';
   document.getElementById('view-login').style.display = '';
   document.getElementById('view-register').style.display = 'none';
   document.getElementById('view-account').style.display = 'none';
+  document.getElementById('view-deleted').style.display = 'none';
   clearError('login-error');
 }
-
 function showRegister() {
   document.getElementById('auth-title').textContent = 'Create account';
   document.getElementById('view-login').style.display = 'none';
   document.getElementById('view-register').style.display = '';
   document.getElementById('view-account').style.display = 'none';
+  document.getElementById('view-deleted').style.display = 'none';
   clearError('reg-error');
 }
-
 function showAccount() {
   document.getElementById('auth-title').textContent = 'Your account';
   document.getElementById('view-login').style.display = 'none';
   document.getElementById('view-register').style.display = 'none';
   document.getElementById('view-account').style.display = '';
+  document.getElementById('view-deleted').style.display = 'none';
   document.getElementById('account-email-display').textContent = userEmail;
 }
 
@@ -606,20 +253,13 @@ async function doLogin() {
   const btn = document.getElementById('login-btn');
   btn.disabled = true; btn.textContent = 'Signing in...';
   try {
-    const r = await fetch(BACKEND + '/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+    const r = await fetch(BACKEND + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     const d = await r.json();
     if (!r.ok) return showError('login-error', d.error || 'Login failed.');
     token = d.token; userEmail = d.email;
     enterChat();
-  } catch (e) {
-    showError('login-error', 'Could not reach server. Try again.');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Sign in';
-  }
+  } catch (e) { showError('login-error', 'Could not reach server. Try again.'); }
+  finally { btn.disabled = false; btn.textContent = 'Sign in'; }
 }
 
 async function doRegister() {
@@ -631,25 +271,17 @@ async function doRegister() {
   const btn = document.getElementById('reg-btn');
   btn.disabled = true; btn.textContent = 'Creating account...';
   try {
-    const r = await fetch(BACKEND + '/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
+    const r = await fetch(BACKEND + '/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
     const d = await r.json();
     if (!r.ok) return showError('reg-error', d.error || 'Registration failed.');
     token = d.token; userEmail = d.email;
     enterChat();
-  } catch (e) {
-    showError('reg-error', 'Could not reach server. Try again.');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Create account';
-  }
+  } catch (e) { showError('reg-error', 'Could not reach server. Try again.'); }
+  finally { btn.disabled = false; btn.textContent = 'Create account'; }
 }
 
 function doLogout() {
-  token = null; userEmail = null; sessionId = null;
-  messages = []; userTurns = 0; summaryShown = false;
+  token = null; userEmail = null; sessionId = null; messages = []; userTurns = 0; summaryShown = false;
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('chat-screen').style.display = 'none';
   showLogin();
@@ -663,64 +295,49 @@ function goToAccount() {
 
 function toggleDeleteConfirm() {
   const box = document.getElementById('delete-confirm');
-  box.style.display = box.style.display === 'none' || !box.style.display ? 'block' : 'none';
+  box.style.display = box.style.display === 'block' ? 'none' : 'block';
 }
 
 async function doDelete() {
   clearError('delete-error');
   try {
-    const r = await fetch(BACKEND + '/account', {
-      method: 'DELETE',
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    const r = await fetch(BACKEND + '/account', { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
     const d = await r.json();
     if (!r.ok) return showError('delete-error', d.error || 'Delete failed.');
-    doLogout();
-  } catch (e) {
-    showError('delete-error', 'Could not reach server. Try again.');
-  }
+    token = null; userEmail = null; sessionId = null; messages = []; userTurns = 0; summaryShown = false;
+    document.getElementById('auth-title').textContent = 'Your account';
+    document.getElementById('view-login').style.display = 'none';
+    document.getElementById('view-register').style.display = 'none';
+    document.getElementById('view-account').style.display = 'none';
+    document.getElementById('view-deleted').style.display = '';
+  } catch (e) { showError('delete-error', 'Could not reach server. Try again.'); }
 }
-
-// ── CHAT ──
 
 async function enterChat() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('chat-screen').style.display = 'flex';
   messages = [{ role: 'assistant', content: STARTER }];
-  userTurns = 0;
-  summaryShown = false;
+  userTurns = 0; summaryShown = false;
   document.getElementById('summary-prompt').style.display = 'none';
   document.getElementById('summary-box').style.display = 'none';
   document.getElementById('chat-error').style.display = 'none';
   renderMessages();
-
-  // Create a session in the backend
   try {
-    const r = await fetch(BACKEND + '/sessions/new', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    const r = await fetch(BACKEND + '/sessions/new', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
     const d = await r.json();
     sessionId = d.sessionId || null;
-  } catch (e) {
-    sessionId = null;
-  }
+  } catch (e) { sessionId = null; }
 }
 
 function newSession() {
   messages = [{ role: 'assistant', content: STARTER }];
-  userTurns = 0;
-  summaryShown = false;
-  sessionId = null;
+  userTurns = 0; summaryShown = false; sessionId = null;
   document.getElementById('summary-prompt').style.display = 'none';
   document.getElementById('summary-box').style.display = 'none';
   document.getElementById('chat-error').style.display = 'none';
   renderMessages();
-
-  fetch(BACKEND + '/sessions/new', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token }
-  }).then(r => r.json()).then(d => { sessionId = d.sessionId || null; }).catch(() => {});
+  fetch(BACKEND + '/sessions/new', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } })
+    .then(r => r.json()).then(d => { sessionId = d.sessionId || null; }).catch(() => {});
 }
 
 function fmt(text) {
@@ -731,82 +348,50 @@ function fmt(text) {
 }
 
 function renderMessages() {
-  const container = document.getElementById('messages');
-  container.innerHTML = messages.map(m => `
+  document.getElementById('messages').innerHTML = messages.map(m => `
     <div class="message-wrap ${m.role}">
       <div class="message-label">${m.role === 'user' ? 'You' : 'Tender'}</div>
       <div class="bubble">${fmt(m.content)}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
   scrollBottom();
 }
 
-function scrollBottom() {
-  setTimeout(() => document.getElementById('bottom').scrollIntoView({ behavior: 'smooth' }), 50);
-}
+function scrollBottom() { setTimeout(() => document.getElementById('bottom').scrollIntoView({ behavior: 'smooth' }), 50); }
 
 function onInput(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-  const btn = document.getElementById('send-btn');
-  if (el.value.trim() && !loading) {
-    btn.classList.add('active');
-  } else {
-    btn.classList.remove('active');
-  }
+  document.getElementById('send-btn').classList.toggle('active', !!el.value.trim() && !loading);
 }
 
-function onKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-}
+function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
 
 async function send() {
   const input = document.getElementById('user-input');
   const msg = input.value.trim();
   if (!msg || loading) return;
-
   messages.push({ role: 'user', content: msg });
   userTurns++;
-  input.value = '';
-  input.style.height = 'auto';
+  input.value = ''; input.style.height = 'auto';
   document.getElementById('send-btn').classList.remove('active');
-  renderMessages();
-  setLoading(true);
-
+  renderMessages(); setLoading(true);
   try {
     const r = await fetch(BACKEND + '/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
-        sessionId,
-        reachedSummary: summaryShown || null
-      })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: messages.map(m => ({ role: m.role, content: m.content })), sessionId, reachedSummary: summaryShown || null })
     });
     const d = await r.json();
     const reply = d.content?.[0]?.text ?? "I'm here. Keep going.";
     messages.push({ role: 'assistant', content: reply });
     renderMessages();
-
-    if (userTurns >= 6 && !summaryShown) {
-      document.getElementById('summary-prompt').style.display = 'flex';
-    }
+    if (userTurns >= 6 && !summaryShown) document.getElementById('summary-prompt').style.display = 'flex';
   } catch (e) {
-    messages.pop();
-    userTurns--;
+    messages.pop(); userTurns--;
     const err = document.getElementById('chat-error');
-    err.textContent = 'Something went wrong. Try again.';
-    err.style.display = 'block';
+    err.textContent = 'Something went wrong. Try again.'; err.style.display = 'block';
     renderMessages();
-  } finally {
-    setLoading(false);
-  }
+  } finally { setLoading(false); }
 }
 
 async function generateSummary() {
@@ -815,38 +400,19 @@ async function generateSummary() {
   try {
     const r = await fetch(BACKEND + '/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: [
-          ...messages.map(m => ({ role: m.role, content: m.content })),
-          { role: 'user', content: SUMMARY_PROMPT }
-        ],
-        sessionId,
-        reachedSummary: true
-      })
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM_PROMPT, messages: [...messages.map(m => ({ role: m.role, content: m.content })), { role: 'user', content: SUMMARY_PROMPT }], sessionId, reachedSummary: true })
     });
     const d = await r.json();
-    const reply = d.content?.[0]?.text ?? '';
     summaryShown = true;
-    const box = document.getElementById('summary-box');
-    const content = document.getElementById('summary-content');
-    content.innerHTML = fmt(reply);
-    box.style.display = 'block';
+    document.getElementById('summary-content').innerHTML = fmt(d.content?.[0]?.text ?? '');
+    document.getElementById('summary-box').style.display = 'block';
     scrollBottom();
   } catch (e) {
     const err = document.getElementById('chat-error');
-    err.textContent = "Couldn't generate summary. Try again.";
-    err.style.display = 'block';
+    err.textContent = "Couldn't generate summary. Try again."; err.style.display = 'block';
     document.getElementById('summary-prompt').style.display = 'flex';
-  } finally {
-    setLoading(false);
-  }
+  } finally { setLoading(false); }
 }
 
 function setLoading(state) {
